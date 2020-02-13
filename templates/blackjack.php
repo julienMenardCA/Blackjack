@@ -17,7 +17,7 @@
         $_SESSION['game']['state'] = "<p>PERDU !!!</p>Vos points dépassent 21 !";
     }
     //Si 21 dès le premier tour pour le joueur, blackjack
-    elseif($_SESSION['game']['player'] == 21 && $_GET['turn'] == 1)
+    elseif($_SESSION['game']['player'] == 21 && $_GET['turn'] == 1 && $_SESSION['game']['bet'] === true)
     {
         $_SESSION['game']['state'] = "<p>GAGNÉ !!!</p>Vous avez fait un blackjack !<p>Vous remportez 12,50€ !";
         $_SESSION['bank']['money'] += 12.5;
@@ -73,16 +73,28 @@
             <h3>Votre argent : <?=$_SESSION['bank']['money']?>€</h3>
             <?php 
                 if($_GET['turn'] === '1' && $_SESSION['game']['bet'] === false)
-                {?>
+                {
+                    if(!array_key_exists('warning', $_SESSION['bank']) || empty($_SESSION['bank']['warning']))
+                    {?>
                     <form action="index.php?action=bet&turn=1" method="post">
                         <input type="submit" value="Miser 5€">
                     </form>
-                <?php 
-                }
-                if($_SESSION['game']['bet'] === true)
+                    <?php }
+                    else
                     {?>
-                        <p>Vous avez misé 5€</p>
-                    <?php }?>
+                    <form action="index.php?action=bankrupt&turn=1" method="post">
+                        <input type="submit" value="Demander de l'argent à la Banque de France">
+                    </form>
+                    <?php }
+                }
+                if($_SESSION['game']['bet'] === true && (!array_key_exists('warning', $_SESSION['bank']) || empty($_SESSION['bank']['warning'])))
+                {?>
+                    <p>Vous avez misé 5€</p>
+                <?php }
+                elseif(array_key_exists('warning', $_SESSION['bank']) && !empty($_SESSION['bank']['warning']))
+                {?>
+                    <p><?=$_SESSION['bank']['warning']?></p>
+                <?php }?>
         </div>
     </div>
     <?php 

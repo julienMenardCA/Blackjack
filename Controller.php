@@ -1,6 +1,8 @@
 <?php
 Class Controller
 {
+    private $bankMoney = 50;
+
     /*
     Cette méthode cacule les points carte par carte, et pour la valeur de l'as, regarde les points totaux du deck qui appele cette méthode
     */
@@ -65,12 +67,12 @@ Class Controller
     //Pour la première entrée sur le site, initialise les valeur que je veux garder dans la session
     public function firstEntry()
     {
-            $_SESSION['bank']['money'] = 50;
-            $_SESSION['bank']['game'] = 1;
+        $_SESSION['bank']['money'] = $this->bankMoney;
+        $_SESSION['bank']['game'] = 1;
 
-            $_SESSION['game']['firstEntry'] = true;
+        $_SESSION['game']['firstEntry'] = true;
 
-            header("Location: index.php?action=play&turn=1");
+        header("Location: index.php?action=play&turn=1");
     }
 
     //Pour le 1er tour de chaque parties
@@ -176,11 +178,27 @@ Class Controller
     //Quand le joueur mise 5€
     public function bet()
     {
-        $_SESSION['bank']['money'] -= 5;
-        //Sert à savoir quoi affiché
-        $_SESSION['game']['bet'] = true;
+        if($_SESSION['bank']['money'] >= 5)
+        {
+            $_SESSION['bank']['money'] -= 5;
+            //Sert à savoir quoi affiché
+            $_SESSION['game']['bet'] = true;
+        }
+        else
+        {
+            $_SESSION['bank']['warning'] = "Vous n'avez plus d'argent";
+        }
 
         include("templates/blackjack.php");
+    }
+
+    public function bankrupt()
+    {
+        $_SESSION['bank']['money'] = $this->bankMoney;
+        $_SESSION['bank']['warning'] = null;
+        session_unset($_SESSION['bank']['warning']);
+
+        header("Location: index.php");
     }
     
 }

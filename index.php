@@ -46,5 +46,9 @@ else
     {
         $controller->end();
     }
+    elseif($_GET['action'] === 'bankrupt')
+    {
+        $controller->bankrupt();
+    }
 }
 ?>
