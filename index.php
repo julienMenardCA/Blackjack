@@ -2,9 +2,6 @@
 //on inclue ici toutes nos classes ! 
 spl_autoload_register();
 
-include("vendor/autoload.php");
-include("vendor/symfony/var-dumper/VarDumper.php");
-
 //on utilise les sessions dans ce site, alors on prévient PHP
 session_start();
 
